@@ -4,6 +4,7 @@ void Game::gameStart()
 {
     mainPlayer plyerOne("./textures/pacman_from_philippines.png", sf::Vector2f(100, 150));
     shapes.push_back(plyerOne);  //creat and push the character in the vector
+    shapes[0].shape.setTexture(&shapes[0].Texture);
     sf::RectangleShape  shape, range;
     shape.setSize(sf::Vector2f(1600, window.getSize().y));
     shape.setFillColor(sf::Color::Blue);

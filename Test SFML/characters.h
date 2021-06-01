@@ -7,11 +7,11 @@ class characters
 {
 public:
 	sf::RectangleShape shape;	//shape should be draw
+	sf::Texture Texture;
 protected:
 	float totalTime;
 	float switchTime; //the time for switching rect
 	sf::IntRect TextureRect;
-	sf::Texture Texture;
 	sf::Vector2u characterSize;
 public:
 	characters(std::string path, sf::Vector2f size);
