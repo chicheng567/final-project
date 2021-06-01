@@ -1,5 +1,5 @@
 #include "Game.h"
-int Game::mouseDetect()
+void Game::mouseDetect()
 {
 	mousePosition = { (float)sf::Mouse::getPosition(window).x , (float)sf::Mouse::getPosition(window).y };
 	for (int i = 0; i < Buttons.size(); ++i) {

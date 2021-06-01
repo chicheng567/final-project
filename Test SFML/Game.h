@@ -28,5 +28,5 @@ public:
 	void MainMenu();
 	void Ending(int mode);
 	void gameStart();
-	int mouseDetect();
+	void mouseDetect();
 };
