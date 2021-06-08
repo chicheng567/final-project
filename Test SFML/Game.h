@@ -16,17 +16,23 @@ private:
 	};
 	sf::Font font;
 	sf::RenderWindow window;
+	std::vector<sf::RectangleShape> render_back;
 	std::vector<sf::Text> Texts;
-	std::vector<sf::Text> Buttons;
+	std::vector<sf::RectangleShape> Buttons;
 	std::vector<sf::RectangleShape> BackGround;
 	std::vector<mainPlayer> shapes;
 public:
 	Game(std::string path);
-	void update();	//update gameState
+	void updateState();	//update gameState
 	void GameRun();
 	//sub function
 	void MainMenu();
 	void Ending(int mode);
 	void gameStart();
+	void PauseMenu();
+	//needed function
 	void mouseDetect();
+	void clearVectors();
+	void clear_render();
+	friend class mainPlayer;
 };

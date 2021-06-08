@@ -39,6 +39,9 @@
     <ClCompile Include="characters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">

@@ -152,6 +152,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="neededFunction.cpp" />
+    <ClCompile Include="pause.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="characters.h" />
