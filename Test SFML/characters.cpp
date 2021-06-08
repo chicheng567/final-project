@@ -32,6 +32,11 @@ void mainPlayer::Update(float deltaTime)
 		shape.move(0, -1.5);
 		switchTime = 0.05;
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		shape.setTexture(&texture_walk);
+		shape.move(0, 1.5);
+		switchTime = 0.05;
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		shape.setTexture(&texture_walk);
 		shape.move(-1.5, 0);
@@ -41,12 +46,7 @@ void mainPlayer::Update(float deltaTime)
 		}
 		switchTime = 0.05;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		shape.setTexture(&texture_walk);
-		shape.move(0, 1.5);
-		switchTime = 0.05;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		shape.setTexture(&texture_walk);
 		shape.move(1.5, 0);
 		if (direction != 1) {
