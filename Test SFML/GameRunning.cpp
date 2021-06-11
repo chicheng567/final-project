@@ -2,8 +2,12 @@
 #include "Game.h"
 void Game::gameStart()
 {
-    mainPlayer plyerOne("./textures/knight1/", sf::Vector2f(565 / 1.5, 368 / 1.5));
-    shapes.push_back(plyerOne);  //create and push the character in the vector
+    mainPlayer playerOne("./textures/knight3/", sf::Vector2f(565 / 2.5, 368 / 2.5), 100);
+    players.push_back(playerOne);  //create and push the character in the vector
+
+    enemy monster("./texture", sf::Vector2f(565 / 2.5, 368 / 2.5), 200);
+    monsters.push_back(monster);
+
     sf::RectangleShape  outback, background[4], range;
     sf::Texture* backgroundT = new sf::Texture[6];
     backgroundT[0].loadFromFile("./background/layers/background.png");

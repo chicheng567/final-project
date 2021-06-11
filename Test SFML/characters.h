@@ -10,17 +10,19 @@ public:
 	sf::Texture Texture;
 protected:
 	int direction;
-	float totalTime;
+	//timers
+	float Timer_animation;
 	float switchTime;//the time for switching rect
 	sf::Texture texture_attack;
 	sf::Texture texture_die;
 	sf::Texture texture_hurt;
 	sf::Texture texture_idle;
 	sf::Texture texture_walk;
-	sf::IntRect TextureRect;
-	sf::Vector2u characterSize;
+	sf::Vector2f characterSize;
+	float velocity;
 public:
-	characters(sf::Vector2f size);
+	characters(sf::Vector2f size, float V);
+	void move(sf::Vector2i D, float deletaTime);
 };
 
 
@@ -32,7 +34,18 @@ private:
 	sf::Vector2u current;
 	sf::Texture texture_jump;
 	sf::Texture texture_run;
+	float manWidth;
+	float weaponWidth;
 public:
-	mainPlayer(std::string path, sf::Vector2f size);
+	mainPlayer(std::string path, sf::Vector2f size, float V);
 	void Update(float deltaTime);
 };
+
+class enemy : public characters
+{
+public:
+	enemy(std::string path, sf::Vector2f size, float V);
+	void Update(float deltaTime, mainPlayer& plyerOne);
+	void Attack(float blood, mainPlayer& plyerOne);
+};
+

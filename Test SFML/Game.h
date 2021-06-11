@@ -20,19 +20,20 @@ private:
 	std::vector<sf::Text> Texts;
 	std::vector<sf::RectangleShape> Buttons;
 	std::vector<sf::RectangleShape> BackGround;
-	std::vector<mainPlayer> shapes;
+	std::vector<mainPlayer> players;
+	std::vector<enemy> monsters;
 public:
 	Game(std::string path);
 	void updateState();	//update gameState
 	void GameRun();
-	//sub function
+	//Menus construct function
+	void gameStart();
 	void MainMenu();
 	void Ending(int mode);
-	void gameStart();
 	void PauseMenu();
 	//needed function
+	void collision();
 	void mouseDetect();
 	void clearVectors();
 	void clear_render();
-	friend class mainPlayer;
 };

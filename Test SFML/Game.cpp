@@ -4,7 +4,7 @@ Game::Game(std::string path) :stateChange(1)
 {
 	state = Game::GameStates::Menu;
 	font.loadFromFile(path);
-	window.create(sf::VideoMode::getDesktopMode(), "works", sf::Style::Fullscreen);
+	window.create(sf::VideoMode::getDesktopMode(), "works");
 }
 void Game::updateState()
 {
@@ -24,7 +24,7 @@ void Game::updateState()
 	}
 	else if (state == GameRunning) {
 		clear_render();
-		if (!shapes.size()) {
+		if (!players.size()) {
 			gameStart();
 		}
 
@@ -55,25 +55,35 @@ void Game::GameRun()
 				}
 			}
 		}
+		//state construct
 		if (stateChange) {
 			updateState();
 		}
-		//Do action for any state
+
+		//update control
 		if (state == GameRunning) {
-			for (int i = 0; i < shapes.size(); ++i) {
-				shapes.at(i).Update(clock.restart().asSeconds());
+			for (int i = 0; i < monsters.size(); ++i) {
+				monsters.at(i).Update(clock.getElapsedTime().asSeconds(), players.at(0));
+			}
+			for (int i = 0; i < players.size(); ++i) {
+				players.at(i).Update(clock.restart().asSeconds());
+				collision();
 			}
 		}
 		else {
 			mouseDetect();
 		}
+
 		//drawing UI
 		window.clear(sf::Color(100, 100, 100));
 		for (int i = 0; i < BackGround.size(); ++i) {
 			window.draw(BackGround[i]);
 		}
-		for (int i = 0; i < shapes.size(); ++i) {
-			window.draw(shapes[i].shape);
+		for (int i = 0; i < players.size(); ++i) {
+			window.draw(players[i].shape);
+		}
+		for (int i = 0; i < monsters.size(); ++i) {
+			window.draw(monsters[i].shape);
 		}
 		for (int i = 0; i < render_back.size(); ++i) {
 			window.draw(render_back[i]);
