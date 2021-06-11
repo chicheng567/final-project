@@ -38,6 +38,7 @@ void Game::updateState()
 
 void Game::GameRun()
 {
+	float DeletaTime;
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -62,11 +63,12 @@ void Game::GameRun()
 
 		//update control
 		if (state == GameRunning) {
+			DeletaTime = clock.restart().asSeconds();
 			for (int i = 0; i < monsters.size(); ++i) {
-				monsters.at(i).Update(clock.getElapsedTime().asSeconds(), players.at(0));
+				monsters.at(i).Update(DeletaTime, players.at(0));
 			}
 			for (int i = 0; i < players.size(); ++i) {
-				players.at(i).Update(clock.restart().asSeconds());
+				players.at(i).Update(DeletaTime);
 				collision();
 			}
 		}
