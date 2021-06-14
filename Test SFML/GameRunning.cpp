@@ -4,10 +4,8 @@ void Game::gameStart()
 {
     mainPlayer playerOne("./textures/knight3/", sf::Vector2f(565 / 2.5, 368 / 2.5), 100);
     players.push_back(playerOne);  //create and push the character in the vector
-
-    enemy monster("./texture", sf::Vector2f(565 / 2.5, 368 / 2.5), 200);
+    enemy monster("./textures/monster3/", sf::Vector2f(200 / 1.8, 215 / 1.8), 100);
     monsters.push_back(monster);
-
     sf::RectangleShape  outback, background[4], range;
     sf::Texture* backgroundT = new sf::Texture[6];
     backgroundT[0].loadFromFile("./background/layers/background.png");
@@ -31,10 +29,13 @@ void Game::gameStart()
     range.setPosition(window.getSize().x / 2, window.getSize().y / 2 + 100);
     outback.setTexture(&backgroundT[0]);
     BackGround.push_back(outback);
+
     for (int i = 0; i < 4; ++i) {
+        backgroundT[i + 1].setRepeated(1);
         background[i].setTexture(&backgroundT[i + 1]);
         BackGround.push_back(background[i]);
     }
+    backgroundT[5].setRepeated(1);
     range.setTexture(&backgroundT[5]);
     BackGround.push_back(range);
 }

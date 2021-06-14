@@ -145,10 +145,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Additon action for characters.cpp" />
     <ClCompile Include="characters.cpp" />
     <ClCompile Include="Endings.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameRunning.cpp" />
+    <ClCompile Include="Loading.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="neededFunction.cpp" />

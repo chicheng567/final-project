@@ -1,6 +1,13 @@
 #include"Game.h"
 void Game::MainMenu()
 {
+	sf::RectangleShape cover;
+	sf::Texture* covertexture = new sf::Texture[1];
+	covertexture->loadFromFile("./background/layers/battleground.png");
+	cover.setTexture(covertexture);
+	cover.setSize(sf::Vector2f(1920, window.getSize().y));
+	cover.setOrigin(cover.getGlobalBounds().width / 2, cover.getGlobalBounds().height / 2);
+	cover.setPosition(window.getSize().x / 2, window.getSize().y / 2);
 	sf::Text title("Our game", font, 100);
 	sf::RectangleShape newGame;
 	sf::RectangleShape continueB;
@@ -23,6 +30,7 @@ void Game::MainMenu()
 	continueB.setPosition(newGame.getPosition().x, newGame.getPosition().y + 150);
 	Exit.setPosition(newGame.getPosition().x, newGame.getPosition().y + 300);
 
+	BackGround.push_back(cover);
 	Buttons.push_back(newGame);
 	Buttons.push_back(continueB);
 	Buttons.push_back(Exit);

@@ -12,7 +12,7 @@ private:
 	bool stateChange;
 	sf::Vector2f mousePosition;
 	enum GameStates {
-		Menu=1, HE, BE, GameRunning, Pause
+		Menu = 1, HE, BE, GameRunning, Pause, Load
 	};
 	sf::Font font;
 	sf::RenderWindow window;
@@ -24,15 +24,17 @@ private:
 	std::vector<enemy> monsters;
 public:
 	Game(std::string path);
-	void updateState();	//update gameState
+	void updateState(); //update gameState
 	void GameRun();
 	//Menus construct function
 	void gameStart();
 	void MainMenu();
 	void Ending(int mode);
 	void PauseMenu();
+	void Loading();
 	//needed function
-	void collision();
+	void moving_backGround(float deletaTime);
+	void collision(float deletaTime);
 	void mouseDetect();
 	void clearVectors();
 	void clear_render();

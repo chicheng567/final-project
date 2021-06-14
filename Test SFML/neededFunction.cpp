@@ -1,16 +1,20 @@
 #include "Game.h"
-void Game::collision()
+void Game::collision(float deletaTime)
 {
+	bool backMove = 0;
 	sf::FloatRect range = BackGround.at(5).getGlobalBounds();
 	sf::Vector2f playerPOS = players[0].shape.getPosition();
-	
+	if (monsters.empty()) {
+		backMove = 1;
+		range.width = BackGround.at(5).getGlobalBounds().width * 3 / 5;
+	}
 	if (!range.contains(playerPOS)) {
 		//¤W¸I¼²
-		if (playerPOS.y < range.top) {
+		if (playerPOS.y < range.top && !players[0].isJumping) {
 			players[0].shape.move(0, range.top - playerPOS.y);
 		}
 		//¤U¸I¼²
-		else if(playerPOS.y > range.top + range.height){
+		else if (playerPOS.y > range.top + range.height) {
 			players[0].shape.move(0, (range.top + range.height) - playerPOS.y);
 		}
 		//¥ª¸I¼²
@@ -20,9 +24,22 @@ void Game::collision()
 		//¥k¸I¼²
 		else if (playerPOS.x > range.left + range.width) {
 			players[0].shape.move(range.left + range.width - playerPOS.x, 0);
+			if (monsters.empty()) {
+				moving_backGround(deletaTime);
+			}
 		}
 	}
 }
+void Game::moving_backGround(float deletaTime)
+{
+	float D_X = players[0].velocity * deletaTime * 2;
+	for (int i = 1; i < BackGround.size(); ++i) {
+		sf::IntRect temp = BackGround.at(i).getTextureRect();
+		temp.left += D_X;
+		BackGround.at(i).setTextureRect(temp);
+	}
+}
+
 void Game::mouseDetect()
 {
 	//determine state
@@ -47,7 +64,7 @@ void Game::mouseDetect()
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 				stateChange = 1;
 				if (i == 0) {
-					state = GameRunning;
+					state = Load;
 				}
 				else if (state == Pause && i == 1) {
 					state = Menu;
@@ -62,7 +79,6 @@ void Game::mouseDetect()
 		}
 	}
 }
-
 
 void Game::clearVectors()
 {
