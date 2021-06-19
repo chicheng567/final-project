@@ -1,3 +1,4 @@
+
 #include "Game.h"
 #include "characters.h"
 #include<thread>
@@ -24,6 +25,7 @@ void Game::updateState()
         Ending(0);
     }
     else if (state == Load) {
+        clear_render();
         clearVectors();
         Loading();
     }
@@ -43,6 +45,30 @@ void Game::updateState()
 
 void Game::GameRun()
 {
+    sf::Music music, BEmusic, opmusic, HEmusic, pausemusic;
+    sf::Sound attackmusic, jumpmusic;
+    sf::SoundBuffer attackmusicbuffer, jumpmusicbuffer;
+    opmusic.openFromFile("./music/opening.ogg");
+    opmusic.setVolume(50);
+    opmusic.setLoop(true);
+    music.openFromFile("./music/bgm.ogg");
+    music.setVolume(50);
+    music.setLoop(true);
+    pausemusic.openFromFile("./music/pausemusic.ogg");
+    pausemusic.setVolume(10);
+    BEmusic.openFromFile("./music/deadmusic.ogg");
+    BEmusic.setVolume(50);
+    BEmusic.setLoop(true);
+    HEmusic.openFromFile("./music/winning.ogg");
+    HEmusic.setVolume(10);
+    HEmusic.setLoop(true);
+    attackmusicbuffer.loadFromFile("./music/playerattack.ogg");
+    attackmusic.setBuffer(attackmusicbuffer);
+    attackmusic.setVolume(50);
+    jumpmusicbuffer.loadFromFile("./music/jumping.ogg");
+    jumpmusic.setBuffer(jumpmusicbuffer);
+    jumpmusic.setVolume(100);
+
     float DeletaTime;
     while (window.isOpen()) {
         sf::Event event;
@@ -74,15 +100,19 @@ void Game::GameRun()
 
         //update control
         if (state == GameRunning) {
+            musicstate = Playing;
             DeletaTime = clock.restart().asSeconds();
             for (int i = 0; i < monsters.size(); ++i) {
                 if (monsters.at(i).Update(DeletaTime, players.at(0))) {
-                    monsters.erase(monsters.begin()+i);
+                    monsters.erase(monsters.begin() + i);
                     i--;
                 }
             }
             for (int i = 0; i < players.size(); ++i) {
-                players.at(i).Update(DeletaTime, monsters);
+                if (players.at(i).Update(DeletaTime, monsters, actionState)) {
+                    state = BE;
+                    stateChange = 1;
+                }
                 collision(DeletaTime);
             }
         }
@@ -90,8 +120,65 @@ void Game::GameRun()
             mouseDetect();
         }
 
+        if (state == Menu) {
+            musicstate = Beginning;
+        }
+        if (state == Pause) {
+            musicstate = Stop;
+        }
+        if (state == BE) {
+            musicstate = Lose;
+        }
+        if (state == HE) {
+            musicstate = Win;
+        }
+
+
+        if (musicstate == Playing && (music.getStatus() == music.Stopped || music.getStatus() == music.Paused)) {
+            BEmusic.stop();
+            opmusic.stop();
+            pausemusic.stop();
+            music.play();
+        }
+        else if (musicstate == Stop && pausemusic.getStatus() == pausemusic.Stopped) {
+            music.pause();
+            pausemusic.play();
+        }
+        else if (musicstate == Lose && BEmusic.getStatus() == BEmusic.Stopped) {
+            music.stop();
+            BEmusic.play();
+        }
+        else if (musicstate == Win && HEmusic.getStatus() == HEmusic.Stopped) {
+            music.stop();
+            HEmusic.play();
+        }
+        else if (musicstate == Beginning && opmusic.getStatus() == opmusic.Stopped) {
+            music.stop();
+            pausemusic.stop();
+            opmusic.play();
+
+        }
+        //else if(musicstate == )
+        else if (musicstate == 0 && (music.getStatus() != music.Stopped || BEmusic.getStatus() != BEmusic.Stopped || opmusic.getStatus() != opmusic.Stopped || HEmusic.getStatus() != HEmusic.Stopped || pausemusic.getStatus() != pausemusic.Stopped)) {
+            BEmusic.stop();
+            HEmusic.stop();
+            music.stop();
+            pausemusic.stop();
+            opmusic.stop();
+        }
+        if (actionState == attack) {
+            attackmusic.play();
+            actionState = 0;
+        }
+        if (actionState == jump) {
+            jumpmusic.play();
+            actionState = 0;
+        }
+
+
+
         //drawing UI
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color::Black); 
         for (int i = 0; i < BackGround.size(); ++i) {
             window.draw(BackGround[i]);
         }

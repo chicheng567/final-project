@@ -2,11 +2,11 @@
 void Game::collision(float deletaTime)
 {
 	bool backMove = 0;
-	sf::FloatRect range = BackGround.at(5).getGlobalBounds();
+	sf::FloatRect range = this->range;
 	sf::Vector2f playerPOS = players[0].shape.getPosition();
 	if (monsters.empty()) {
 		backMove = 1;
-		range.width = BackGround.at(5).getGlobalBounds().width * 3 / 5;
+		range.width = this->range.width * 3 / 5;
 	}
 	if (!range.contains(playerPOS)) {
 		//¤W¸I¼²
@@ -33,11 +33,20 @@ void Game::collision(float deletaTime)
 void Game::moving_backGround(float deletaTime)
 {
 	float D_X = players[0].velocity * deletaTime * 2;
+	sf::IntRect temp;
+	temp = BackGround.at(1).getTextureRect();
+	temp.left += D_X;
+	temp.left %= temp.width;
+	if (BackGround[1].getTextureRect().left > temp.left) {
+		sponse_monster();
+	}
 	for (int i = 1; i < BackGround.size(); ++i) {
-		sf::IntRect temp = BackGround.at(i).getTextureRect();
+		temp = BackGround.at(i).getTextureRect();
 		temp.left += D_X;
+		temp.left %= temp.width;
 		BackGround.at(i).setTextureRect(temp);
 	}
+	
 }
 
 void Game::mouseDetect()
@@ -67,7 +76,7 @@ void Game::mouseDetect()
 					state = Load;
 				}
 				else if (state == Pause && i == 1) {
-					state = Menu;
+					state = Menu; 
 				}
 				else {
 					window.close();

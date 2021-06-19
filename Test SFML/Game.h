@@ -1,12 +1,31 @@
 #pragma once
 #include<SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 #include<iostream>
 #include<string>
 #include<vector>
 #include"characters.h"
+
 class Game
 {
 private:
+	//MAP
+	class Map {
+	private:
+		int wave;
+		std::vector<int> monster3;
+		std::vector<int> monster9;
+		std::vector<int> monster1;
+	public:
+		Map();
+		friend class Game;
+	};
+	//music
+	enum MusicStates {
+		Playing = 1, Lose, Beginning, Stop, Win
+	};
+	int musicstate;
+
 	sf::Clock clock;
 	int state;
 	bool stateChange;
@@ -22,7 +41,15 @@ private:
 	std::vector<sf::RectangleShape> BackGround;
 	std::vector<mainPlayer> players;
 	std::vector<enemy> monsters;
+	Map map;
 public:
+	enum Action {
+		attack = 1, jump
+	};
+	int actionState;
+	//public properties
+	sf::Rect<float> range;
+	//methods and constructor
 	Game(std::string path);
 	void updateState(); //update gameState
 	void GameRun();
@@ -38,4 +65,6 @@ public:
 	void mouseDetect();
 	void clearVectors();
 	void clear_render();
+	//MAP methods
+	void sponse_monster();
 };

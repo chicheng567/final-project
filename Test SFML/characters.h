@@ -11,11 +11,7 @@ protected:
 	//timers
 	float Timer_animation;
 	float switchTime;//the time for switching rect
-	sf::Texture texture_attack;
-	sf::Texture texture_die;
-	sf::Texture texture_hurt;
-	sf::Texture texture_idle;
-	sf::Texture texture_run;
+	
 	sf::Vector2f characterSize;
 	float velocity;
 	//jump
@@ -24,7 +20,10 @@ protected:
 	float landingPOS;
 	//Attack
 	bool canAttack;
+	int KB;
+	int hitdirection;
 	float Timer_Attack;
+	float Timer_Wait;
 	int direction;
 	float blood;
 	bool isHit;
@@ -39,16 +38,21 @@ class mainPlayer : public characters
 {
 private:
 	//animation
-	sf::Vector2u sizeOfTexture;
-	sf::Vector2u current;
+	sf::Texture texture_attack;
+	sf::Texture texture_die;
+	sf::Texture texture_hurt;
+	sf::Texture texture_idle;
+	sf::Texture texture_run;
 	sf::Texture texture_walk;
 	sf::Texture texture_jump;
+	sf::Vector2u sizeOfTexture;
+	sf::Vector2u current;
 	bool d_change;
 	float manWidth;
 	float weaponWidth;
 public:
 	mainPlayer(std::string path, sf::Vector2f size, float V);
-	void Update(float deltaTime, std::vector<enemy>&monsters);
+	int Update(float deltaTime, std::vector<enemy>& monsters, int& actionstate);
 	void Jump(float deletaTime);
 	void Attack(std::vector<enemy>&monster);
 	friend class Game;
@@ -57,7 +61,29 @@ public:
 
 class enemy : public characters
 {
+public:
+	//enemy sample prototypes
+	class enemySample {
+	private:
+		sf::Texture texture_attack;
+		sf::Texture texture_die;
+		sf::Texture texture_hurt;
+		sf::Texture texture_idle;
+		sf::Texture texture_run;
+	public:
+		enemySample(std::string path);
+		friend class enemy;
+	};
+	//sample
+	static std::vector<enemySample> Samples;
 private:
+	//member
+	sf::Texture* texture_attack_ptr;
+	sf::Texture* texture_die_ptr;
+	sf::Texture* texture_hurt_ptr;
+	sf::Texture* texture_idle_ptr;
+	sf::Texture* texture_run_ptr;
+
 	bool d_change;
 	sf::Vector2u sizeOfTexture;
 	sf::Vector2u current;
@@ -65,7 +91,13 @@ private:
 	float weaponWidth;
 	sf::Vector2f Chasing_point;
 public:
-	enemy(std::string path, sf::Vector2f size, float V);
+	enemy(sf::Vector2f size, float V, int enemyType);
+	/*
+	enemy::Samples.push_back(mon3);
+	enemy::Samples.push_back(mon9);
+	enemy::Samples.push_back(mon1);
+	*/
+	void Attack(mainPlayer& players);
 	int Update(float deltaTime, mainPlayer& plyerOne);
 	friend class mainPlayer;
 };

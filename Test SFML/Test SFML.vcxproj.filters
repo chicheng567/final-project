@@ -36,9 +36,6 @@
     <ClCompile Include="GameRunning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="characters.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pause.cpp">
       <Filter>Source Files\Menus</Filter>
     </ClCompile>
@@ -47,6 +44,12 @@
     </ClCompile>
     <ClCompile Include="Additon action for characters.cpp">
       <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="characters.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

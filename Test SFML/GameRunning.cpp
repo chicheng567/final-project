@@ -2,10 +2,9 @@
 #include "Game.h"
 void Game::gameStart()
 {
+    map.wave = 0;
     mainPlayer playerOne("./textures/knight3/", sf::Vector2f(565 / 2.5, 368 / 2.5), 100);
     players.push_back(playerOne);  //create and push the character in the vector
-    enemy monster("./textures/monster3/", sf::Vector2f(200 / 1.8, 215 / 1.8), 100);
-    monsters.push_back(monster);
     sf::RectangleShape  outback, background[4], range;
     sf::Texture* backgroundT = new sf::Texture[6];
     backgroundT[0].loadFromFile("./background/layers/background.png");
@@ -38,4 +37,13 @@ void Game::gameStart()
     backgroundT[5].setRepeated(1);
     range.setTexture(&backgroundT[5]);
     BackGround.push_back(range);
+    //set the range
+    this -> range = range.getGlobalBounds();
+    //push back sample for monster
+    enemy::enemySample mon3("./textures/monster3/");
+    enemy::enemySample mon9("./textures/monster9/");
+    enemy::enemySample mon1("./textures/monster1/");
+    enemy::Samples.push_back(mon3);
+    enemy::Samples.push_back(mon9);
+    enemy::Samples.push_back(mon1);
 }
