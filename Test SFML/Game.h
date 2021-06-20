@@ -49,6 +49,7 @@ public:
 	int actionState;
 	//public properties
 	sf::Rect<float> range;
+	std::vector<sf::RectangleShape> HPbar;
 	//methods and constructor
 	Game(std::string path);
 	void updateState(); //update gameState

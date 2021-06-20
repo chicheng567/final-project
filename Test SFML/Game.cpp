@@ -1,4 +1,3 @@
-
 #include "Game.h"
 #include "characters.h"
 #include<thread>
@@ -109,7 +108,7 @@ void Game::GameRun()
                 }
             }
             for (int i = 0; i < players.size(); ++i) {
-                if (players.at(i).Update(DeletaTime, monsters, actionState)) {
+                if (players.at(i).Update(DeletaTime, monsters, actionState) || players.at(i).updateHPbar(HPbar[1])) {
                     state = BE;
                     stateChange = 1;
                 }
@@ -178,9 +177,12 @@ void Game::GameRun()
 
 
         //drawing UI
-        window.clear(sf::Color::Black); 
+        window.clear(sf::Color::Black);
         for (int i = 0; i < BackGround.size(); ++i) {
             window.draw(BackGround[i]);
+        }
+        for (int i = 0; i < HPbar.size(); ++i) {
+            window.draw(HPbar[i]);
         }
         for (int i = 0; i < players.size(); ++i) {
             window.draw(players[i].shape);

@@ -1,8 +1,9 @@
 #include "characters.h"
+#include"Game.h"
 #include <cmath>
 #include<stdio.h>
 //¦@³q
-characters::characters(sf::Vector2f size) : Timer_animation(0), switchTime(0.1f), direction(1), characterSize(size),  isJumping(0), gravity(0), canAttack(0), isHit(0)
+characters::characters(sf::Vector2f size) : Timer_animation(0), switchTime(0.1f), direction(1), characterSize(size), isJumping(0), gravity(0), canAttack(0), isHit(0), Timer_Wait(0)
 {
 	shape.setSize(size);
 	canAttack = 1;
@@ -25,9 +26,34 @@ mainPlayer::mainPlayer(std::string path, sf::Vector2f size) : characters(size), 
 	manWidth = characterSize.x / 2 - 20;
 	weaponWidth = characterSize.x - manWidth;
 	shape.setOrigin(manWidth, characterSize.y);
-	blood = 300;
+	blood = 450;
 	velocity = 100;
 	power = 50;
+	shape.setTexture(&texture_idle);
+	initHPbar();
+}
+
+void mainPlayer::initHPbar() {
+	float width = 300.f;
+	float height = 50.f;
+	float x = 20.f;
+	float y = 20.f;
+
+	HPbarback.setSize(sf::Vector2f(width, height));
+	HPbarback.setFillColor(sf::Color(50, 50, 50, 200));
+	HPbarback.setPosition(x, y);
+
+	HPbarinner.setSize(sf::Vector2f(width, height));
+	HPbarinner.setFillColor(sf::Color(250, 20, 20, 200));
+	HPbarinner.setPosition(HPbarback.getPosition());
+}
+
+int mainPlayer::updateHPbar(sf::RectangleShape& HPbar) {
+	float width = 300.f * (blood / 450);
+	float height = 50.f;
+
+	HPbar.setSize(sf::Vector2f(width, height));
+	return 0;
 }
 
 //©Çª«
@@ -36,11 +62,10 @@ enemy::enemySample::enemySample(std::string path)
 	texture_attack.loadFromFile(path + "attack.png");
 	texture_die.loadFromFile(path + "die.png");
 	texture_hurt.loadFromFile(path + "hurt.png");
-	texture_idle.loadFromFile(path + "idle.png");
 	texture_run.loadFromFile(path + "run.png");
 }
 std::vector<enemy::enemySample> enemy::Samples;
-enemy::enemy(sf::Vector2f size,  int enemyType) : characters(size), d_change(0)
+enemy::enemy(sf::Vector2f size, int enemyType) : characters(size), d_change(0)
 {
 	if (enemyType == 0) {
 		current = { 52, 0 };
@@ -82,6 +107,5 @@ enemy::enemy(sf::Vector2f size,  int enemyType) : characters(size), d_change(0)
 	texture_attack_ptr = &Samples[enemyType].texture_attack;
 	texture_die_ptr = &Samples[enemyType].texture_die;
 	texture_hurt_ptr = &Samples[enemyType].texture_hurt;
-	texture_idle_ptr = &Samples[enemyType].texture_idle;
 	texture_run_ptr = &Samples[enemyType].texture_run;
 }

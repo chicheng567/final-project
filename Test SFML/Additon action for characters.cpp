@@ -21,10 +21,11 @@ void characters::move(sf::Vector2i D, float deletaTime)
 int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actionState)
 {
 	Timer_animation += deltaTime;
+	shape.setTexture(&texture_idle);
 	//判定攻擊
 	if (!canAttack) {
 		Timer_Attack += deltaTime;
-		if (Timer_Attack <= 0.5 && Timer_Attack > 0.3) {
+		if (Timer_Attack <= 0.5 && Timer_Attack > 0.3 && !isHit) {
 			Attack(monsters);
 		}
 		if (Timer_Attack >= 0.8) {
@@ -49,7 +50,7 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 	}
 	if (blood > 0) {
 		if (Timer_Wait && current.y != 9) {
-			;
+			move(sf::Vector2i(-1 * direction, 0), deltaTime);
 		}
 		else {
 			Timer_Wait = 0;
@@ -134,6 +135,7 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 		Timer_animation -= switchTime;
 	}
 	shape.setTextureRect(sf::IntRect(current.x + (direction == 1 ? 0 : sizeOfTexture.x), 676 * current.y + 100, sizeOfTexture.x * direction, sizeOfTexture.y));// 676為step
+	std::cout << shape.getPosition().x << " " << shape.getPosition().y << "\n";
 	return 0;
 }
 
@@ -143,18 +145,16 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 	Timer_animation += deltaTime;
 	if (!canAttack) {
 		Timer_Attack += deltaTime;
-		if (Timer_Attack <= 0.5 && Timer_Attack > 0.4) {
+		if (Timer_Attack <= 0.5 && Timer_Attack > 0.4 && !isHit) {
 			Attack(plyerOne);
 		}
 		if (Timer_Attack >= 0.8) {
 			canAttack = 1;
 			plyerOne.isHit = 0;
-			if (plyerOne.KB % 3 == 0 && plyerOne.KB != 0) {
-				plyerOne.KB = 0;
-			}
 		}
 	}
 	if (blood > 0) {
+		//更新追蹤點
 		Chasing_point = plyerOne.shape.getPosition();
 		if (plyerOne.isJumping) {
 			Chasing_point.y = plyerOne.landingPOS;
@@ -189,7 +189,7 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 					temp.x = -1;
 				}
 			}
-			else if (shape.getPosition().x - Chasing_point.x <= -0) {
+			else if (shape.getPosition().x - Chasing_point.x <= 0) {
 				if (direction != 1) {
 					direction = 1;
 					d_change = 1;

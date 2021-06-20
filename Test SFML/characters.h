@@ -3,6 +3,7 @@
 #include<vector>
 #include<string>
 #include<iostream>
+
 class characters
 {
 public:
@@ -11,7 +12,7 @@ protected:
 	//timers
 	float Timer_animation;
 	float switchTime;//the time for switching rect
-	
+
 	sf::Vector2f characterSize;
 	float velocity;
 	//jump
@@ -47,17 +48,22 @@ private:
 	sf::Texture texture_jump;
 	sf::Vector2u sizeOfTexture;
 	sf::Vector2i current;
+	sf::RectangleShape HPbarback;
+	sf::RectangleShape HPbarinner;
 	bool d_change;
 	float manWidth;
 	float weaponWidth;
 	//Attack relative
 	int KB;
 	int hitdirection;
+
+	void initHPbar();
+	int updateHPbar(sf::RectangleShape& HPbar);
 public:
 	mainPlayer(std::string path, sf::Vector2f size);
 	int Update(float deltaTime, std::vector<enemy>& monsters, int& actionstate);
 	void Jump(float deletaTime);
-	void Attack(std::vector<enemy>&monster);
+	void Attack(std::vector<enemy>& monster);
 	friend class Game;
 	friend class enemy;
 };
