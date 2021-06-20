@@ -8,7 +8,7 @@ void Game::MainMenu()
 	cover.setSize(sf::Vector2f(1920, window.getSize().y));
 	cover.setOrigin(cover.getGlobalBounds().width / 2, cover.getGlobalBounds().height / 2);
 	cover.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-	sf::Text title("Our game", font, 100);
+	sf::Text title("Legend Never Die", font, 100);
 	sf::RectangleShape sword;
 	sf::Texture* sword_T = new sf::Texture;
 	sf::Vector2u warriorsize;
@@ -17,16 +17,13 @@ void Game::MainMenu()
 	sword.setSize(sf::Vector2f(512, 512));
 	sword.setPosition(1000, 350);
 	sf::RectangleShape newGame;
-	sf::RectangleShape continueB;
 	sf::RectangleShape Exit;
 	sf::Texture* new_T = new sf::Texture;
 	sf::Texture* con_T = new sf::Texture;
 	sf::Texture* Exit_T = new sf::Texture;
 	new_T->loadFromFile("./textures/new_button.png");
-	con_T->loadFromFile("./textures/continue.png");
 	Exit_T->loadFromFile("./textures/exit Button.png");
 	newGame.setTexture(new_T);
-	continueB.setTexture(con_T);
 	Exit.setTexture(Exit_T);
 	//set title position
 	title.setPosition(
@@ -34,12 +31,10 @@ void Game::MainMenu()
 	);
 	//set buttoms position
 	newGame.setPosition(title.getPosition().x - 180, title.getPosition().y + 300);
-	continueB.setPosition(newGame.getPosition().x, newGame.getPosition().y + 150);
 	Exit.setPosition(newGame.getPosition().x, newGame.getPosition().y + 300);
 
 	BackGround.push_back(cover);
 	Buttons.push_back(newGame);
-	Buttons.push_back(continueB);
 	Buttons.push_back(Exit);
 	BackGround.push_back(sword);
 	Texts.push_back(title);

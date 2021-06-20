@@ -5,7 +5,7 @@ Game::Game(std::string path) :stateChange(1), switchTime(0.005f)
 {
 	state = Game::GameStates::Menu;
 	font.loadFromFile(path);
-	window.create(sf::VideoMode::getDesktopMode(), "works");
+	window.create(sf::VideoMode::getDesktopMode(), "works", sf::Style::Fullscreen);
 }
 void Game::updateState()
 {
