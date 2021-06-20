@@ -9,6 +9,13 @@ void Game::MainMenu()
 	cover.setOrigin(cover.getGlobalBounds().width / 2, cover.getGlobalBounds().height / 2);
 	cover.setPosition(window.getSize().x / 2, window.getSize().y / 2);
 	sf::Text title("Our game", font, 100);
+	sf::RectangleShape sword;
+	sf::Texture* sword_T = new sf::Texture;
+	sf::Vector2u warriorsize;
+	sword_T->loadFromFile("./textures/weapons.png");
+	sword.setTexture(sword_T);
+	sword.setSize(sf::Vector2f(512, 512));
+	sword.setPosition(1000, 350);
 	sf::RectangleShape newGame;
 	sf::RectangleShape continueB;
 	sf::RectangleShape Exit;
@@ -34,5 +41,6 @@ void Game::MainMenu()
 	Buttons.push_back(newGame);
 	Buttons.push_back(continueB);
 	Buttons.push_back(Exit);
+	BackGround.push_back(sword);
 	Texts.push_back(title);
 }

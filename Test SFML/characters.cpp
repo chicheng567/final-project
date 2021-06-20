@@ -26,7 +26,7 @@ mainPlayer::mainPlayer(std::string path, sf::Vector2f size) : characters(size), 
 	manWidth = characterSize.x / 2 - 20;
 	weaponWidth = characterSize.x - manWidth;
 	shape.setOrigin(manWidth, characterSize.y);
-	blood = 450;
+	blood = 600;
 	velocity = 100;
 	power = 50;
 	shape.setTexture(&texture_idle);
@@ -109,7 +109,7 @@ enemy::enemy(sf::Vector2f size, int enemyType) : characters(size), d_change(0)
 		manWidth = characterSize.x / 2 - 20;
 		gap_y = 342;
 		start_y = 50;
-		blood = 1500;
+		blood = 1000;
 		velocity = 125;
 		power = 150;
 	}
@@ -124,7 +124,7 @@ enemy::enemy(sf::Vector2f size, int enemyType) : characters(size), d_change(0)
 	texture_idle_ptr = &Samples[enemyType].texture_idle;
 }
 
-boss::boss() : enemy(sf::Vector2f(400, 430), 3)
+boss::boss() : enemy(sf::Vector2f(400 * 0.75, 430 * 0.75), 3)
 {
 	texture_jump_ptr = &Samples[3].texture_jump;
 	UltCounter = 0;

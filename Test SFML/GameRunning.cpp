@@ -51,6 +51,4 @@ void Game::gameStart()
     enemy::Samples.push_back(mon9);
     enemy::Samples.push_back(mon1);
     enemy::Samples.push_back(boss7);
-    boss Boss;
-    boss_vec.push_back(Boss);
 }

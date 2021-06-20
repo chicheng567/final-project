@@ -34,7 +34,7 @@ public:
 };
 
 class enemy;
-
+class boss;
 class mainPlayer : public characters
 {
 private:
@@ -61,9 +61,9 @@ private:
 	int updateHPbar(sf::RectangleShape& HPbar);
 public:
 	mainPlayer(std::string path, sf::Vector2f size);
-	int Update(float deltaTime, std::vector<enemy>& monsters, int& actionstate);
+	int Update(float deltaTime, std::vector<enemy>& monsters, std::vector<boss>& Boss, int& actionstate);
 	void Jump(float deletaTime);
-	void Attack(std::vector<enemy>& monster);
+	void Attack(std::vector<enemy>& monster, std::vector<boss>& Boss);
 	friend class Game;
 	friend class enemy;
 	friend class boss;

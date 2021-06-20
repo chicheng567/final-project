@@ -44,6 +44,11 @@ private:
 	std::vector<enemy> monsters;
 	std::vector<boss> boss_vec;
 	Map map;
+//ADD
+	float Timer_animation;
+	float switchTime;
+	sf::Vector2u current;
+	std::vector<sf::RectangleShape> ad;
 public:
 	enum Action {
 		attack = 1, jump
@@ -60,7 +65,8 @@ public:
 	void gameStart();
 	void MainMenu();
 	void Ending(int mode);
-	void PauseMenu();
+	void PauseMenu(float deltatime, std::vector<sf::RectangleShape>& ads);
+	void updateAD(float deltaTime, sf::RectangleShape& AD); //update pause ad
 	void Loading();
 	//needed function
 	void moving_backGround(float deletaTime);

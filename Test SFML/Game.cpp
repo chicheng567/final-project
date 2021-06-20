@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "characters.h"
 #include<thread>
-Game::Game(std::string path) :stateChange(1)
+Game::Game(std::string path) :stateChange(1), switchTime(0.005f)
 {
 	state = Game::GameStates::Menu;
 	font.loadFromFile(path);
@@ -9,7 +9,7 @@ Game::Game(std::string path) :stateChange(1)
 }
 void Game::updateState()
 {
-
+	float deltatime;
 	if (state == Menu) {
 		clearVectors();
 		clear_render();
@@ -24,7 +24,6 @@ void Game::updateState()
 		Ending(0);
 	}
 	else if (state == Load) {
-		clear_render();
 		clearVectors();
 		Loading();
 	}
@@ -36,14 +35,25 @@ void Game::updateState()
 
 	}
 	else if (state == Pause) {
-		PauseMenu();
+		deltatime = clock.restart().asSeconds();
+		PauseMenu(deltatime, ad);
 	}
 	clock.restart();
 	stateChange = 0;
 }
+void Game::updateAD(float deltaTime, sf::RectangleShape& AD) {
+	Timer_animation += deltaTime;
+	switchTime = 1;
+	if (Timer_animation >= switchTime) {
+		current.y = (current.y + 1) % 5;
+		Timer_animation -= switchTime;
+	}
+	AD.setTextureRect(sf::IntRect(0, 321.2 * current.y, 760, 321.2));
+}
 
 void Game::GameRun()
 {
+	float deltatime;
 	sf::Music music, BEmusic, opmusic, HEmusic, pausemusic;
 	sf::Sound attackmusic, jumpmusic;
 	sf::SoundBuffer attackmusicbuffer, jumpmusicbuffer;
@@ -115,7 +125,7 @@ void Game::GameRun()
 			}
 
 			for (int i = 0; i < players.size(); ++i) {
-				if (players.at(i).Update(DeletaTime, monsters, actionState) || players.at(i).updateHPbar(HPbar[1])) {
+				if (players.at(i).Update(DeletaTime, monsters,boss_vec, actionState) || players.at(i).updateHPbar(HPbar[1])) {
 					state = BE;
 					stateChange = 1;
 				}
@@ -131,6 +141,7 @@ void Game::GameRun()
 		}
 		if (state == Pause) {
 			musicstate = Stop;
+			updateAD(DeletaTime, render_back[2]);
 		}
 		if (state == BE) {
 			musicstate = Lose;
