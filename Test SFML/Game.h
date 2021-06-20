@@ -18,6 +18,7 @@ private:
 		std::vector<int> monster1;
 	public:
 		Map();
+		int wave_detect(int monsterNUM);
 		friend class Game;
 	};
 	//music
@@ -41,6 +42,7 @@ private:
 	std::vector<sf::RectangleShape> BackGround;
 	std::vector<mainPlayer> players;
 	std::vector<enemy> monsters;
+	std::vector<boss> boss_vec;
 	Map map;
 public:
 	enum Action {

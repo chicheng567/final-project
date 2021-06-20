@@ -63,6 +63,8 @@ enemy::enemySample::enemySample(std::string path)
 	texture_die.loadFromFile(path + "die.png");
 	texture_hurt.loadFromFile(path + "hurt.png");
 	texture_run.loadFromFile(path + "run.png");
+	texture_jump.loadFromFile(path + "jump.png");
+	texture_idle.loadFromFile(path + "idle.png");
 }
 std::vector<enemy::enemySample> enemy::Samples;
 enemy::enemy(sf::Vector2f size, int enemyType) : characters(size), d_change(0)
@@ -100,6 +102,17 @@ enemy::enemy(sf::Vector2f size, int enemyType) : characters(size), d_change(0)
 		velocity = 200;
 		power = 80;
 	}
+	else if (enemyType == 3) {
+		current = { 52, 0 };
+		sizeOfTexture.x = 200;
+		sizeOfTexture.y = 260;
+		manWidth = characterSize.x / 2 - 20;
+		gap_y = 342;
+		start_y = 50;
+		blood = 1500;
+		velocity = 125;
+		power = 150;
+	}
 
 	weaponWidth = characterSize.x - manWidth;
 	shape.setOrigin(manWidth, characterSize.y);
@@ -108,4 +121,11 @@ enemy::enemy(sf::Vector2f size, int enemyType) : characters(size), d_change(0)
 	texture_die_ptr = &Samples[enemyType].texture_die;
 	texture_hurt_ptr = &Samples[enemyType].texture_hurt;
 	texture_run_ptr = &Samples[enemyType].texture_run;
+	texture_idle_ptr = &Samples[enemyType].texture_idle;
+}
+
+boss::boss() : enemy(sf::Vector2f(400, 430), 3)
+{
+	texture_jump_ptr = &Samples[3].texture_jump;
+	UltCounter = 0;
 }

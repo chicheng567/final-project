@@ -66,6 +66,7 @@ public:
 	void Attack(std::vector<enemy>& monster);
 	friend class Game;
 	friend class enemy;
+	friend class boss;
 };
 
 class enemy : public characters
@@ -79,13 +80,15 @@ public:
 		sf::Texture texture_hurt;
 		sf::Texture texture_idle;
 		sf::Texture texture_run;
+		sf::Texture texture_jump;
 	public:
 		enemySample(std::string path);
 		friend class enemy;
+		friend class boss;
 	};
 	//sample
 	static std::vector<enemySample> Samples;
-private:
+protected:
 	//member
 	sf::Texture* texture_attack_ptr;
 	sf::Texture* texture_die_ptr;
@@ -108,6 +111,17 @@ public:
 	enemy::Samples.push_back(mon1);
 	*/
 	void Attack(mainPlayer& players);
-	int Update(float deltaTime, mainPlayer& plyerOne);
+	virtual int Update(float deltaTime, mainPlayer& plyerOne);
 	friend class mainPlayer;
+};
+
+class boss :public enemy
+{
+private:
+	int UltCounter;
+	sf::Texture* texture_jump_ptr;
+public:
+	boss();
+	void Ult(mainPlayer& players, float deltaTime);
+	int Update(float deltaTime, mainPlayer& plyerOne);
 };

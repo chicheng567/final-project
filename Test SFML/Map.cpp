@@ -9,6 +9,18 @@ Game::Map::Map() :wave(0)
 	monster1 = { 0, 0, 0, 6 };
 }
 
+int Game::Map::wave_detect(int monsterNUM)
+{
+	static int last = 0;
+	if (last && monsterNUM == 0) {
+		return 1;
+	}
+	else {
+		last = monsterNUM;
+		return 0;
+	}
+}
+
 void Game::sponse_monster()
 {
 	if (map.wave < 4) {
@@ -35,6 +47,11 @@ void Game::sponse_monster()
 			new_enemy.shape.setPosition(sponse_POS);
 			monsters.push_back(new_enemy);
 		}
+	}
+	else if (map.wave == 4) {
+		boss Boss;
+		Boss.shape.setPosition(range.left + range.width * 3 / 5, range.top + range.height/2);
+		boss_vec.push_back(Boss);
 	}
 	map.wave++;
 }

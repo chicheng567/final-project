@@ -4,7 +4,7 @@ void Game::collision(float deletaTime)
     bool backMove = 0;
     sf::FloatRect range = this->range;
     sf::Vector2f playerPOS = players[0].shape.getPosition();
-    if (monsters.empty()) {
+    if (monsters.empty() && boss_vec.empty()) {
         backMove = 1;
         range.width = this->range.width * 3 / 5;
     }
@@ -24,7 +24,7 @@ void Game::collision(float deletaTime)
         //¥k¸I¼²
         else if (playerPOS.x > range.left + range.width) {
             players[0].shape.move(range.left + range.width - playerPOS.x, 0);
-            if (monsters.empty()) {
+            if (monsters.empty() && boss_vec.empty()) {
                 moving_backGround(deletaTime);
             }
         }
@@ -109,6 +109,7 @@ void Game::clearVectors()
     players.clear();
     Texts.clear();
     monsters.clear();
+    boss_vec.clear();
 }
 void Game::clear_render()
 {

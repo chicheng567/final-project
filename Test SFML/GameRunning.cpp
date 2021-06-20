@@ -46,7 +46,11 @@ void Game::gameStart()
     enemy::enemySample mon3("./textures/monster3/");
     enemy::enemySample mon9("./textures/monster9/");
     enemy::enemySample mon1("./textures/monster1/");
+    enemy::enemySample boss7("./textures/monster7/");
     enemy::Samples.push_back(mon3);
     enemy::Samples.push_back(mon9);
     enemy::Samples.push_back(mon1);
+    enemy::Samples.push_back(boss7);
+    boss Boss;
+    boss_vec.push_back(Boss);
 }

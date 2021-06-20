@@ -21,7 +21,6 @@ void characters::move(sf::Vector2i D, float deletaTime)
 int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actionState)
 {
 	Timer_animation += deltaTime;
-	shape.setTexture(&texture_idle);
 	//判定攻擊
 	if (!canAttack) {
 		Timer_Attack += deltaTime;
@@ -135,7 +134,6 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 		Timer_animation -= switchTime;
 	}
 	shape.setTextureRect(sf::IntRect(current.x + (direction == 1 ? 0 : sizeOfTexture.x), 676 * current.y + 100, sizeOfTexture.x * direction, sizeOfTexture.y));// 676為step
-	std::cout << shape.getPosition().x << " " << shape.getPosition().y << "\n";
 	return 0;
 }
 
@@ -145,10 +143,10 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 	Timer_animation += deltaTime;
 	if (!canAttack) {
 		Timer_Attack += deltaTime;
-		if (Timer_Attack <= 0.5 && Timer_Attack > 0.4 && !isHit) {
+		if (Timer_Attack <= 0.5 && Timer_Attack > 0.4) {
 			Attack(plyerOne);
 		}
-		if (Timer_Attack >= 0.8) {
+		if (Timer_Attack >= 1.3) {
 			canAttack = 1;
 			plyerOne.isHit = 0;
 		}
@@ -179,50 +177,53 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 		//can move
 		else {
 			Timer_Wait = 0;
-			if (shape.getPosition().x - Chasing_point.x > 0) {
-				if (direction != -1) {
-					direction = -1;
-					d_change = 1;
+			if (canAttack || Timer_Attack >= 0.5) {
+				if (shape.getPosition().x - Chasing_point.x > 0) {
+					if (direction != -1) {
+						direction = -1;
+						d_change = 1;
+					}
+					if (shape.getPosition().x - Chasing_point.x > weaponWidth) {
+						shape.setTexture(texture_run_ptr);
+						temp.x = -1;
+					}
 				}
-				if (shape.getPosition().x - Chasing_point.x > weaponWidth) {
-					shape.setTexture(texture_run_ptr);
-					temp.x = -1;
+				else if (shape.getPosition().x - Chasing_point.x <= 0) {
+					if (direction != 1) {
+						direction = 1;
+						d_change = 1;
+					}
+					if (Chasing_point.x - shape.getPosition().x > weaponWidth) {
+						shape.setTexture(texture_run_ptr);
+						temp.x = 1;
+					}
 				}
-			}
-			else if (shape.getPosition().x - Chasing_point.x <= 0) {
-				if (direction != 1) {
-					direction = 1;
-					d_change = 1;
+				if (Chasing_point.y - shape.getPosition().y > 10) {
+					temp.y = 1;
 				}
-				if (Chasing_point.x - shape.getPosition().x > weaponWidth) {
-					shape.setTexture(texture_run_ptr);
-					temp.x = 1;
+				else if (Chasing_point.y - shape.getPosition().y < -10) {
+					temp.y = -1;
 				}
-			}
-			if (Chasing_point.y - shape.getPosition().y > 10) {
-				temp.y = 1;
-			}
-			else if (Chasing_point.y - shape.getPosition().y < -10) {
-				temp.y = -1;
-			}
 
-			if (temp.x || temp.y) {
-				shape.setTexture(texture_run_ptr);
-				move(temp, deltaTime);
-			}
-			else {
-				if (canAttack && plyerOne.blood > 0) {
-					canAttack = 0;
-					switchTime = 0.05;
-					Timer_Attack = 0;
-					shape.setTexture(texture_attack_ptr);
-					current.y = 18;
+				if (temp.x || temp.y) {
+					shape.setTexture(texture_run_ptr);
+					move(temp, deltaTime);
 				}
-			}
-			if (d_change) {
-				shape.setOrigin(shape.getOrigin().x - (weaponWidth - manWidth) * direction, characterSize.y);
-				shape.move(direction * manWidth / 2, 0);
-				d_change = 0;
+				else {
+					shape.setTexture(texture_idle_ptr);
+					if (canAttack && plyerOne.blood > 0) {
+						canAttack = 0;
+						switchTime = 0.05;
+						Timer_Attack = 0;
+						shape.setTexture(texture_attack_ptr);
+						current.y = 18;
+					}
+				}
+				if (d_change) {
+					shape.setOrigin(shape.getOrigin().x - (weaponWidth - manWidth) * direction, characterSize.y);
+					shape.move(direction * manWidth / 2, 0);
+					d_change = 0;
+				}
 			}
 		}
 	}
@@ -257,7 +258,7 @@ void mainPlayer::Jump(float deletaTime)
 void mainPlayer::Attack(std::vector<enemy>& monsters)
 {
 	for (int i = 0; i < monsters.size(); ++i) {
-		if (direction * monsters[i].direction < 0 && !monsters[i].isHit) {
+		if (direction * monsters[i].direction < 0 && !monsters[i].isHit && monsters[i].blood > 0) {
 			if (fabs(monsters[i].shape.getPosition().x - shape.getPosition().x) <= this->weaponWidth - 10
 				&& fabs(monsters[i].shape.getPosition().y - shape.getPosition().y) <= 20) {
 				monsters[i].blood -= power;
@@ -271,7 +272,9 @@ void mainPlayer::Attack(std::vector<enemy>& monsters)
 }
 
 void enemy::Attack(mainPlayer& players) {
-	if (!players.isHit) {
+	if (!players.isHit 
+		&& fabs(Chasing_point.x - shape.getPosition().x) <= weaponWidth
+			&& fabs(Chasing_point.y - shape.getPosition().y) <= 10) {
 		if (direction * players.direction < 0) {
 			players.hitdirection = 1;
 		}
@@ -285,4 +288,128 @@ void enemy::Attack(mainPlayer& players) {
 			players.current.y = 0;
 		}
 	}
+}
+
+void boss::Ult(mainPlayer& players, float deltaTime) {
+	if (gravity) {
+		gravity += deltaTime * 600;
+		shape.move(0, gravity * deltaTime);
+	}
+	if (gravity >= 300) {
+		isJumping = 0;
+		gravity = 0;
+	}
+	if (Chasing_point.x - shape.getPosition().x < 30 || Chasing_point.y - shape.getPosition().y == 0) {
+		players.isHit = 1;
+	}
+}
+int boss::Update(float deltaTime, mainPlayer& plyerOne)
+{
+	Timer_animation += deltaTime;
+	if (!canAttack) {
+		Timer_Attack += deltaTime;
+		if (Timer_Attack <= 1.52 && Timer_Attack > 1.32) {
+			Attack(plyerOne);
+		}
+		if (Timer_Attack >= 1.8) {
+			canAttack = 1;
+			plyerOne.isHit = 0;
+			UltCounter++;
+		}
+	}
+	if (blood > 0) {
+		Chasing_point = plyerOne.shape.getPosition();
+		if (plyerOne.isJumping) {
+			Chasing_point.y = plyerOne.landingPOS;
+		}
+		Chasing_point.x -= plyerOne.direction * plyerOne.manWidth / 2;
+
+		//我也不知道這段的數字在幹嘛，反正就是修復一些誤差
+		if (direction * plyerOne.direction < 0) {
+			Chasing_point.x += 30 * plyerOne.direction;
+		}
+		sf::Vector2i temp;
+		//hurt
+		if (isHit || (Timer_Wait > 0 && Timer_Wait < 0.5)) {
+			if (isHit) {
+				shape.setTexture(texture_hurt_ptr);
+				move(sf::Vector2i(-1 * direction, 0), deltaTime);
+			}
+			Timer_Wait += deltaTime;
+		}
+		//can move
+		else {
+			
+			Timer_Wait = 0;
+			if (canAttack || Timer_Attack >= 1.52) {
+				if (shape.getPosition().x - Chasing_point.x > 0) {
+					if (direction != -1) {
+						direction = -1;
+						d_change = 1;
+					}
+					if (shape.getPosition().x - Chasing_point.x > weaponWidth - 20) {
+						shape.setTexture(texture_run_ptr);
+						temp.x = -1;
+					}
+				}
+				else if (shape.getPosition().x - Chasing_point.x <= -0) {
+					if (direction != 1) {
+						direction = 1;
+						d_change = 1;
+					}
+					if (Chasing_point.x - shape.getPosition().x > weaponWidth - 20) {
+						shape.setTexture(texture_run_ptr);
+						temp.x = 1;
+					}
+				}
+				if (Chasing_point.y - shape.getPosition().y > 10) {
+					temp.y = 1;
+				}
+				else if (Chasing_point.y - shape.getPosition().y < -10) {
+					temp.y = -1;
+				}
+
+				if (temp.x || temp.y) {
+					switchTime = 0.05;
+					shape.setTexture(texture_run_ptr);
+					move(temp, deltaTime);
+				}
+				else {
+					if (canAttack && plyerOne.blood > 0) {
+						if (UltCounter % 3 == 0 && UltCounter) {
+							shape.setTexture(texture_jump_ptr);
+							Ult(plyerOne, deltaTime);
+						}
+						else {
+							canAttack = 0;
+							switchTime = 0.16;
+							Timer_Attack = 0;
+							shape.setTexture(texture_attack_ptr);
+							current.y = 18;
+						}
+					}
+				}
+				if (d_change) {
+					shape.setOrigin(shape.getOrigin().x - (weaponWidth - manWidth) * direction, characterSize.y);
+					shape.move(direction * manWidth / 2, 0);
+					d_change = 0;
+				}
+			}
+			
+		}
+	}
+	else {
+		shape.setTexture(texture_die_ptr);
+		if (current.y == 18) {
+			return 1;
+		}
+	}
+	//regular update
+	if (Timer_animation >= switchTime) {
+		current.y = (current.y + 1) % 19;
+		Timer_animation -= switchTime;
+	}
+	std::cout << switchTime << "\n";
+	shape.setTextureRect(sf::IntRect(current.x + (direction == 1 ? 0 : sizeOfTexture.x), gap_y * current.y + start_y, sizeOfTexture.x * direction, sizeOfTexture.y));
+	return 0;
 }
