@@ -3,7 +3,7 @@
 void Game::gameStart()
 {
     map.wave = 0;
-    mainPlayer playerOne("./textures/knight3/", sf::Vector2f(565 / 2.5, 368 / 2.5), 100);
+    mainPlayer playerOne("./textures/knight3/", sf::Vector2f(565 / 2.5, 368 / 2.5));
     players.push_back(playerOne);  //create and push the character in the vector
     sf::RectangleShape  outback, background[4], range;
     sf::Texture* backgroundT = new sf::Texture[6];

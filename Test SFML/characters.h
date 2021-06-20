@@ -19,16 +19,16 @@ protected:
 	float gravity;
 	float landingPOS;
 	//Attack
+	int power;
+	float attack_CD;
 	bool canAttack;
-	int KB;
-	int hitdirection;
 	float Timer_Attack;
 	float Timer_Wait;
 	int direction;
 	float blood;
 	bool isHit;
 public:
-	characters(sf::Vector2f size, float V, float blood_in);
+	characters(sf::Vector2f size);
 	void move(sf::Vector2i D, float deletaTime);
 };
 
@@ -46,12 +46,15 @@ private:
 	sf::Texture texture_walk;
 	sf::Texture texture_jump;
 	sf::Vector2u sizeOfTexture;
-	sf::Vector2u current;
+	sf::Vector2i current;
 	bool d_change;
 	float manWidth;
 	float weaponWidth;
+	//Attack relative
+	int KB;
+	int hitdirection;
 public:
-	mainPlayer(std::string path, sf::Vector2f size, float V);
+	mainPlayer(std::string path, sf::Vector2f size);
 	int Update(float deltaTime, std::vector<enemy>& monsters, int& actionstate);
 	void Jump(float deletaTime);
 	void Attack(std::vector<enemy>&monster);
@@ -83,6 +86,7 @@ private:
 	sf::Texture* texture_hurt_ptr;
 	sf::Texture* texture_idle_ptr;
 	sf::Texture* texture_run_ptr;
+	int start_y, gap_y;
 
 	bool d_change;
 	sf::Vector2u sizeOfTexture;
@@ -91,7 +95,7 @@ private:
 	float weaponWidth;
 	sf::Vector2f Chasing_point;
 public:
-	enemy(sf::Vector2f size, float V, int enemyType);
+	enemy(sf::Vector2f size, int enemyType);
 	/*
 	enemy::Samples.push_back(mon3);
 	enemy::Samples.push_back(mon9);

@@ -2,7 +2,7 @@
 #include <cmath>
 #include<stdio.h>
 //共通
-characters::characters(sf::Vector2f size, float V, float blood_in) : Timer_animation(0), switchTime(0.1f), direction(1), characterSize(size), velocity(V), isJumping(0), gravity(0), blood(blood_in), canAttack(0), isHit(0)
+characters::characters(sf::Vector2f size) : Timer_animation(0), switchTime(0.1f), direction(1), characterSize(size),  isJumping(0), gravity(0), canAttack(0), isHit(0)
 {
 	shape.setSize(size);
 	canAttack = 1;
@@ -10,9 +10,8 @@ characters::characters(sf::Vector2f size, float V, float blood_in) : Timer_anima
 }
 
 //玩家
-mainPlayer::mainPlayer(std::string path, sf::Vector2f size, float V) : characters(size, V, 300), d_change(0)
+mainPlayer::mainPlayer(std::string path, sf::Vector2f size) : characters(size), d_change(0), KB(0)
 {
-	shape.setPosition(500, 500);
 	texture_attack.loadFromFile(path + "knight3_attack.png");
 	texture_die.loadFromFile(path + "knight3_die.png");
 	texture_hurt.loadFromFile(path + "knight3_hurt.png");
@@ -26,6 +25,9 @@ mainPlayer::mainPlayer(std::string path, sf::Vector2f size, float V) : character
 	manWidth = characterSize.x / 2 - 20;
 	weaponWidth = characterSize.x - manWidth;
 	shape.setOrigin(manWidth, characterSize.y);
+	blood = 300;
+	velocity = 100;
+	power = 50;
 }
 
 //怪物
@@ -38,13 +40,42 @@ enemy::enemySample::enemySample(std::string path)
 	texture_run.loadFromFile(path + "run.png");
 }
 std::vector<enemy::enemySample> enemy::Samples;
-enemy::enemy(sf::Vector2f size, float V, int enemyType) : characters(size, V, 100), d_change(0)
+enemy::enemy(sf::Vector2f size,  int enemyType) : characters(size), d_change(0)
 {
-	Chasing_point = { 0, 0 };
-	current = { 52, 0 };
-	sizeOfTexture.x = 200;
-	sizeOfTexture.y = 215;
-	manWidth = characterSize.x / 2 - 20;
+	if (enemyType == 0) {
+		current = { 52, 0 };
+		sizeOfTexture.x = 200;
+		sizeOfTexture.y = 215;
+		manWidth = characterSize.x / 2 - 20;
+		gap_y = 301;
+		start_y = 70;
+		blood = 100;
+		power = 50;
+		velocity = 100;
+	}
+	else if (enemyType == 1) {
+		current = { 40, 0 };
+		sizeOfTexture.x = 190;
+		sizeOfTexture.y = 200;
+		manWidth = characterSize.x / 2 - 20;
+		gap_y = 267;
+		start_y = 50;
+		blood = 150;
+		power = 100;
+		velocity = 80;
+	}
+	else if (enemyType == 2) {
+		current = { 52, 0 };
+		sizeOfTexture.x = 200;
+		sizeOfTexture.y = 215;
+		manWidth = characterSize.x / 2 - 20;
+		gap_y = 285;
+		start_y = 60;
+		blood = 100;
+		velocity = 200;
+		power = 80;
+	}
+
 	weaponWidth = characterSize.x - manWidth;
 	shape.setOrigin(manWidth, characterSize.y);
 	//set Textures

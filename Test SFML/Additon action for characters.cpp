@@ -17,9 +17,11 @@ void characters::move(sf::Vector2i D, float deletaTime)
 		}
 	}
 }
+
 int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actionState)
 {
 	Timer_animation += deltaTime;
+	//判定攻擊
 	if (!canAttack) {
 		Timer_Attack += deltaTime;
 		if (Timer_Attack <= 0.5 && Timer_Attack > 0.3) {
@@ -32,15 +34,25 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 			}
 		}
 	}
+	//判定受傷擊退
+	if (KB >= 150) {
+		Timer_Wait += deltaTime;
+		shape.setTexture(&texture_hurt);
+		current.y = -1;
+		switchTime = 0.05;
+		KB = 0;
+		if (hitdirection == -1) {
+			d_change = 1;
+			direction *= hitdirection;
+			hitdirection = 0;
+		}
+	}
 	if (blood > 0) {
-		if (KB % 3 == 0 && KB != 0) {
-			shape.setTexture(&texture_hurt);
-			if (hitdirection != 0) {
-				direction *= hitdirection;
-				hitdirection = 0;
-			}
+		if (Timer_Wait && current.y != 9) {
+			;
 		}
 		else {
+			Timer_Wait = 0;
 			if (canAttack || Timer_Attack >= 0.5) {    //0.5為跑完攻擊動畫所需時間
 				sf::Vector2i temp;
 				if (!isJumping) {
@@ -68,9 +80,6 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 					}
 				}
 				//if jumping
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-					actionState = Game::Action::jump;
-				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isJumping) {
 					isJumping = 1;
 					gravity = -300;
@@ -78,6 +87,7 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 					switchTime = 0.2;
 					current.y = 0;
 					landingPOS = shape.getPosition().y;
+					actionState = Game::Action::jump;
 				}
 				//if running
 				if (temp.x || temp.y) {
@@ -88,13 +98,6 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 						velocity = 300;
 					}
 					move(temp, deltaTime);
-				}
-				//校正回歸, 可command掉看後果
-				//改變參考點
-				if (d_change) {
-					shape.setOrigin(shape.getOrigin().x - (weaponWidth - manWidth) * direction, characterSize.y);
-					shape.move(direction * manWidth / 2, 0);
-					d_change = 0;
 				}
 				//attack
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
@@ -119,6 +122,13 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 	}
 
 	//regular Update
+	//校正回歸, 可command掉看後果
+	//改變參考點
+	if (d_change) {
+		shape.setOrigin(shape.getOrigin().x - (weaponWidth - manWidth) * direction, characterSize.y);
+		shape.move(direction * manWidth / 2, 0);
+		d_change = 0;
+	}
 	if (Timer_animation >= switchTime) {
 		current.y = (current.y + 1) % 10;
 		Timer_animation -= switchTime;
@@ -126,6 +136,7 @@ int mainPlayer::Update(float deltaTime, std::vector<enemy>& monsters, int& actio
 	shape.setTextureRect(sf::IntRect(current.x + (direction == 1 ? 0 : sizeOfTexture.x), 676 * current.y + 100, sizeOfTexture.x * direction, sizeOfTexture.y));// 676為step
 	return 0;
 }
+
 //怪物
 int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 {
@@ -157,17 +168,18 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 
 		switchTime = 0.05;
 		sf::Vector2i temp;
-		//shape.setTexture(texture_idle);
+		//hurt
 		if (isHit || (Timer_Wait > 0 && Timer_Wait < 0.5)) {
 			if (isHit) {
 				shape.setTexture(texture_hurt_ptr);
-				shape.move(-0.25 * direction, 0);
+				move(sf::Vector2i(-1 * direction, 0), deltaTime);
 			}
 			Timer_Wait += deltaTime;
 		}
+		//can move
 		else {
 			Timer_Wait = 0;
-			if (shape.getPosition().x - Chasing_point.x > 50) {
+			if (shape.getPosition().x - Chasing_point.x > 0) {
 				if (direction != -1) {
 					direction = -1;
 					d_change = 1;
@@ -177,7 +189,7 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 					temp.x = -1;
 				}
 			}
-			else if (shape.getPosition().x - Chasing_point.x <= -50) {
+			else if (shape.getPosition().x - Chasing_point.x <= -0) {
 				if (direction != 1) {
 					direction = 1;
 					d_change = 1;
@@ -198,17 +210,19 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 				shape.setTexture(texture_run_ptr);
 				move(temp, deltaTime);
 			}
+			else {
+				if (canAttack && plyerOne.blood > 0) {
+					canAttack = 0;
+					switchTime = 0.05;
+					Timer_Attack = 0;
+					shape.setTexture(texture_attack_ptr);
+					current.y = 18;
+				}
+			}
 			if (d_change) {
 				shape.setOrigin(shape.getOrigin().x - (weaponWidth - manWidth) * direction, characterSize.y);
 				shape.move(direction * manWidth / 2, 0);
 				d_change = 0;
-			}
-			if (fabs(Chasing_point.x - shape.getPosition().x) <= weaponWidth && canAttack && plyerOne.blood > 0) {
-				canAttack = 0;
-				switchTime = 0.05;
-				Timer_Attack = 0;
-				shape.setTexture(texture_attack_ptr);
-				current.y = 18;
 			}
 		}
 	}
@@ -223,7 +237,8 @@ int enemy::Update(float deltaTime, mainPlayer& plyerOne)
 		current.y = (current.y + 1) % 19;
 		Timer_animation -= switchTime;
 	}
-	shape.setTextureRect(sf::IntRect(current.x + (direction == 1 ? 0 : sizeOfTexture.x), 301 * current.y + 70, sizeOfTexture.x * direction, sizeOfTexture.y));
+	
+	shape.setTextureRect(sf::IntRect(current.x + (direction == 1 ? 0 : sizeOfTexture.x), gap_y * current.y + start_y, sizeOfTexture.x * direction, sizeOfTexture.y));
 	return 0;
 }
 
@@ -239,13 +254,13 @@ void mainPlayer::Jump(float deletaTime)
 	}
 }
 
-void mainPlayer::Attack(std::vector<enemy>&monsters)
+void mainPlayer::Attack(std::vector<enemy>& monsters)
 {
 	for (int i = 0; i < monsters.size(); ++i) {
 		if (direction * monsters[i].direction < 0 && !monsters[i].isHit) {
-			if (fabs(monsters[i].shape.getPosition().x - shape.getPosition().x) <= this -> weaponWidth - 10 
+			if (fabs(monsters[i].shape.getPosition().x - shape.getPosition().x) <= this->weaponWidth - 10
 				&& fabs(monsters[i].shape.getPosition().y - shape.getPosition().y) <= 20) {
-				monsters[i].blood -= 50;
+				monsters[i].blood -= power;
 				monsters[i].isHit = 1;
 				if (monsters[i].blood <= 0) {
 					monsters[i].current.y = 0;
@@ -257,14 +272,14 @@ void mainPlayer::Attack(std::vector<enemy>&monsters)
 
 void enemy::Attack(mainPlayer& players) {
 	if (!players.isHit) {
-		players.KB++;
 		if (direction * players.direction < 0) {
 			players.hitdirection = 1;
 		}
 		else {
 			players.hitdirection = -1;
 		}
-		players.blood -= 50;
+		players.blood -= power;
+		players.KB += power;
 		players.isHit = 1;
 		if (players.blood <= 0) {
 			players.current.y = 0;
